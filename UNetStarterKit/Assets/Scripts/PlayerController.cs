@@ -13,30 +13,78 @@ public class PlayerController : NetworkBehaviour
     public Transform nameLabelPosition;
     public Transform nameLabelPrefab;
     private TextMesh nameLabel;
+
+    [SyncVar(hook = "SyncNameChanged")]
     public string playerName = "Player";
+    public int playerPrefabIndex;
+    public string[] playerNames = { "Boy", "Girl", "Robot" };
+
+    [Command]
+    void CmdChangeName(string name)
+    {
+        playerName = name;
+    }
+
+    void SyncNameChanged(string name)
+    {
+        nameLabel.text = name;
+    }
 
     // OnGUI /////////////////////////////////////////
 
     private void OnGUI()
     {
+        if (isLocalPlayer)
+        {
+            GUILayout.BeginArea(new Rect(Screen.width - 260, 10, 250, Screen.height - 20));
+            playerName = GUILayout.TextField(playerName);
+            if (GUILayout.Button("Change name"))
+            {
+                CmdChangeName(playerName);
+            }
+            GUILayout.Space(10);
+            playerPrefabIndex = GUILayout.SelectionGrid(playerPrefabIndex - 1, playerNames, 3) + 1;
+            if (GUILayout.Button("Change character"))
+            {
+                CmdChangePlayerPrefab(playerPrefabIndex);
+            }
+            GUILayout.EndArea();
+        }
     }
 
-
+    [Command]
+    void CmdChangePlayerPrefab(int prefabIndex)
+    {
+        NetworkManager mng = NetworkManager.singleton;
+        CustomNetworkManager custom = mng.GetComponent<CustomNetworkManager>();
+        custom.ChangePlayerPrefab(this, prefabIndex);
+    }    
     // Animation syncing /////////////////////////////
-    
+
+    [SyncVar(hook = "OnSetAnimation")]
     string animationName;
 
     void setAnimation(string animName)
     {
+        OnSetAnimation(animName);
+        CmdSetAnimation(animName);
+    }
+
+    [Command]
+    void CmdSetAnimation(string animName)
+    {
+        animationName = animName;
+    }
+
+    void OnSetAnimation(string animName)
+    {
         if (animationName == animName) return;
         animationName = animName;
-
         animator.SetBool("Idling", false);
         animator.SetBool("Running", false);
         animator.SetBool("Running backwards", false);
         animator.ResetTrigger("Jumping");
         animator.ResetTrigger("Kicking");
-
         if (animationName == "Idling") animator.SetBool("Idling", true);
         else if (animationName == "Running") animator.SetBool("Running", true);
         else if (animationName == "Running backwards") animator.SetBool("Running backwards", true);

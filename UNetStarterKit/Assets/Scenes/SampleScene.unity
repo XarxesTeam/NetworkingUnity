@@ -651,7 +651,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1916145916}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: -822479833, guid: 870353891bb340e2b2a9c8707e7419ba, type: 3}
+  m_Script: {fileID: 11500000, guid: 2619c8d33ac992847852f378d5060997, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_NetworkPort: 7777
@@ -666,11 +666,14 @@ MonoBehaviour:
   m_PlayerPrefab: {fileID: 1200280241953600, guid: b4e89f8d0ea7fa74f970ab1925d7bfab,
     type: 2}
   m_AutoCreatePlayer: 1
-  m_PlayerSpawnMethod: 0
+  m_PlayerSpawnMethod: 1
   m_OfflineScene: 
   m_OnlineScene: 
   m_SpawnPrefabs:
   - {fileID: 1806645502744586, guid: 8e989c5f8696bbb42b838b16247f457b, type: 2}
+  - {fileID: 1200280241953600, guid: b4e89f8d0ea7fa74f970ab1925d7bfab, type: 2}
+  - {fileID: 1235823938203468, guid: ac22c17b65d557c44ba055efe86b57e8, type: 2}
+  - {fileID: 1039102430177350, guid: ab05e7a367fe7424e9d4e016b9b2de06, type: 2}
   m_CustomConfig: 0
   m_MaxConnections: 4
   m_ConnectionConfig:
@@ -726,6 +729,12 @@ MonoBehaviour:
   matchSize: 4
   isNetworkActive: 0
   matchMaker: {fileID: 0}
+  selectedGridIndex: 0
+  playerNames:
+  - Boy
+  - Girl
+  - Robot
+  playerPrefabIndex: 0
 --- !u!4 &1916145919
 Transform:
   m_ObjectHideFlags: 0

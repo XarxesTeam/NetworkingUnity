@@ -2222,6 +2222,11 @@ MonoBehaviour:
   nameLabelPrefab: {fileID: 4458510328604076, guid: 165184253b5d72d4da3604f8f5f3d0a7,
     type: 2}
   playerName: Player
+  playerPrefabIndex: 0
+  playerNames:
+  - Boy
+  - Girl
+  - Robot
 --- !u!114 &114618488158050370
 MonoBehaviour:
   m_ObjectHideFlags: 1
