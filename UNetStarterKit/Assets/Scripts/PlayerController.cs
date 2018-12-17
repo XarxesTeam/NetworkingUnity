@@ -97,6 +97,7 @@ public class PlayerController : NetworkBehaviour
 
     public int hp = 100;
     public int damage = 9;
+    public bool kicking = false;
 
     // Use this for initialization
     void Start ()
@@ -162,6 +163,7 @@ public class PlayerController : NetworkBehaviour
         if (Input.GetButton("Fire1"))
         {
             setAnimation("Kicking");
+            kicking = true;
         }
   	}
 
@@ -172,4 +174,23 @@ public class PlayerController : NetworkBehaviour
             Destroy(nameLabel.gameObject);
         }
     }
+
+    //[SyncVar(hook = "SyncHpChanged")]
+    //public int newHp = 100;
+    //
+    //[Command]
+    //void CmdChangeHp(int hp)
+    //{
+    //    newHp = hp;
+    //}
+    //
+    //void SyncHpChanged(int newHp)
+    //{
+    //    hp = newHp;
+    //}
+    //
+    //public void ChangeEnemyHp(int otherRemainingHp)
+    //{
+    //    CmdChangeHp(otherRemainingHp);
+    //}
 }

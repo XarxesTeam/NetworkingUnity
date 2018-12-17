@@ -1049,7 +1049,7 @@ GameObject:
   - component: {fileID: 65887862720439254}
   - component: {fileID: 114880493618979718}
   m_Layer: 0
-  m_Name: Cube
+  m_Name: DmgCollider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2135,6 +2135,7 @@ MonoBehaviour:
   - Robot
   hp: 100
   damage: 9
+  kicking: 0
 --- !u!114 &114880493618979718
 MonoBehaviour:
   m_ObjectHideFlags: 1

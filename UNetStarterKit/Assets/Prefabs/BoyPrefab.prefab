@@ -2283,6 +2283,7 @@ MonoBehaviour:
   - Robot
   hp: 100
   damage: 9
+  kicking: 0
 --- !u!114 &114618488158050370
 MonoBehaviour:
   m_ObjectHideFlags: 1
