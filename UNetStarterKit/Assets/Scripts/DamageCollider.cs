@@ -13,11 +13,11 @@ public class DamageCollider : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-      // if (other.gameObject.GetComponent<PlayerController>() != null && GetComponentInParent<PlayerController>().kicking)
-      // {
-      //     other.gameObject.GetComponent<PlayerController>().hp -= damage;
-      //     //GetComponentInParent<PlayerController>().ChangeEnemyHp(other.gameObject.GetComponent<PlayerController>().hp);
-      //     GetComponentInParent<PlayerController>().kicking = false;
-      // }
+       if (other.gameObject.GetComponent<PlayerController>() != null && GetComponentInParent<PlayerController>().kicking)
+       {
+            GetComponentInParent<PlayerController>().kicking = false;
+            //other.gameObject.GetComponent<PlayerController>().hp -= damage;
+            other.GetComponent<PlayerController>().ChangeEnemyHp(damage);
+       }
     }
 }
