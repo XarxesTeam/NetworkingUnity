@@ -58,7 +58,8 @@ public class PlayerController : NetworkBehaviour
         NetworkManager mng = NetworkManager.singleton;
         CustomNetworkManager custom = mng.GetComponent<CustomNetworkManager>();
         custom.ChangePlayerPrefab(this, prefabIndex);
-    }    
+    }
+    
     // Animation syncing /////////////////////////////
 
     [SyncVar(hook = "OnSetAnimation")]
@@ -94,6 +95,9 @@ public class PlayerController : NetworkBehaviour
 
     // Virtual methods ///////////////////////////////
 
+    public int hp = 100;
+    public int damage = 9;
+
     // Use this for initialization
     void Start ()
     {
@@ -104,8 +108,7 @@ public class PlayerController : NetworkBehaviour
         {
             CameraController.player = this.transform;
         }
-
-
+        
         animator = GetComponent<Animator>();
 	}
 	
@@ -160,7 +163,7 @@ public class PlayerController : NetworkBehaviour
         {
             setAnimation("Kicking");
         }
-	}
+  	}
 
     private void OnDestroy()
     {
