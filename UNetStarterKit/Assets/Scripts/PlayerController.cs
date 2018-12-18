@@ -95,7 +95,6 @@ public class PlayerController : NetworkBehaviour
 
     // Virtual methods ///////////////////////////////
 
-    public int hp = 100;
     public int damage = 9;
     public bool kicking = false;
 
@@ -118,6 +117,8 @@ public class PlayerController : NetworkBehaviour
     {
         nameLabel.transform.position = nameLabelPosition.position;
         nameLabel.text = playerName;
+        nameLabel.text += " - HP: ";
+        nameLabel.text += hp.ToString();
 
         if (!isLocalPlayer) return;
         
@@ -175,22 +176,35 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    [SyncVar(hook = "SyncHpChanged")]
-    private int newHp = 100;
-    
-    [Command]
-    void CmdChangeHp(int dmg)
-    {
-        newHp -= dmg;
-    }
-    
-    void SyncHpChanged(int newHp)
-    {
-        hp = newHp;
-    }
-    
+
     public void ChangeEnemyHp(int dmg)
     {
-        CmdChangeHp(dmg);
+       TakeDamage(dmg);
+    }
+
+    [SyncVar(hook = "SyncHpChanged")]
+    public int hp = 100;
+
+    void SyncHpChanged(int dmg)
+    {
+        hp -= dmg;
+    }
+
+    [Client]
+    public void TakeDamage(int dmg)
+    {    
+        CmdTakeDamage(dmg);
+    }
+
+    [Command]
+    void CmdTakeDamage(int dmg)
+    {
+        RpcTakeDamage(dmg);
+    }
+
+    [ClientRpc]
+    public void RpcTakeDamage(int dmg)
+    {
+        hp -= dmg;
     }
 }
