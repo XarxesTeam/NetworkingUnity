@@ -19,6 +19,9 @@ public class MainMenuLogic : MonoBehaviour {
     public GameObject girl_prefab;
     public GameObject robot_prefab;
 
+
+    private GUIStyle title_style;
+
     // Use this for initialization
     void Start ()
     {
@@ -26,6 +29,9 @@ public class MainMenuLogic : MonoBehaviour {
         girl_prefab.SetActive(false);
         boy_prefab.SetActive(false);
         robot_prefab.SetActive(false);
+
+        title_style = new GUIStyle("label");
+        title_style.fontSize = 70;
     }
 	
 	// Update is called once per frame
@@ -45,6 +51,8 @@ public class MainMenuLogic : MonoBehaviour {
     {
         if (intro)
         {
+            GUI.Label(new Rect(Screen.width * 0.5f - 380 * 0.5f, Screen.height * 0.2f, 400, 100), "Fight Game", title_style);
+
             if (GUI.Button(new Rect(Screen.width * 0.5f - 150 * 0.5f, Screen.height * 0.6f, 150, 30), "Play"))
             {
                 if(index_prefab != -1)

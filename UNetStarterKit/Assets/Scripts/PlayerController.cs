@@ -199,5 +199,11 @@ public class PlayerController : NetworkBehaviour
     public void RpcTakeDamage(int dmg)
     {
         hp -= dmg;
+
+        if (hp <= 0)
+        {
+            //This dont works correctly
+            GameObject.FindGameObjectWithTag("GameLogic").GetComponent<GameLogic>().game_state = GAME_STATE.PLAY_END;
+        }
     }
 }

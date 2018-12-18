@@ -7,7 +7,8 @@ public enum GAME_STATE
 {
     _INIT = 0,
     _CONNECT,
-    PLAY
+    PLAY,
+    PLAY_END
 }
 
 public class GameLogic : MonoBehaviour {
@@ -19,6 +20,9 @@ public class GameLogic : MonoBehaviour {
     Texture2D conect_texture = null;
     private float connect_delay_time = 1.0f;
     private float timer = 0.0f;
+
+    Texture2D play_end_texture = null;
+
 
     public GAME_STATE game_state;
 
@@ -46,6 +50,16 @@ public class GameLogic : MonoBehaviour {
         }
         conect_texture.SetPixels(fillColorArray);
         conect_texture.Apply();
+
+        play_end_texture = new Texture2D(Screen.width, Screen.height);
+        color = new Color(0.4f, 0.4f, 0.4f,0.2f);
+        fillColorArray = play_end_texture.GetPixels();
+        for (var i = 0; i < fillColorArray.Length; ++i)
+        {
+            fillColorArray[i] = color;
+        }
+        play_end_texture.SetPixels(fillColorArray);
+        play_end_texture.Apply();
     }
 
     // Update is called once per frame
@@ -75,6 +89,7 @@ public class GameLogic : MonoBehaviour {
                     {
                         SceneManager.LoadScene("MainMenu");
                         Destroy(GameObject.FindGameObjectWithTag("NetworkManager"), 0.0f);
+                        game_state = GAME_STATE._INIT;
                     }
                 }
                 break;
@@ -92,6 +107,22 @@ public class GameLogic : MonoBehaviour {
             case GAME_STATE.PLAY:
                 {
 
+                }
+                break;
+
+            case GAME_STATE.PLAY_END:
+                {
+                    GUI.depth = 1;
+                    GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), conect_texture);
+
+                    GUI.Label(new Rect(Screen.width * 0.5f - 150 * 0.5f, Screen.height * 0.45f, 150, 20), "You Dead");
+
+                    if (GUI.Button(new Rect(Screen.width * 0.5f - 200 * 0.5f, Screen.height * 0.55f, 200, 20), "Back to Character Selection"))
+                    {
+                        SceneManager.LoadScene("MainMenu");
+                        Destroy(GameObject.FindGameObjectWithTag("NetworkManager"), 0.0f);
+                        game_state = GAME_STATE._INIT;
+                    }
                 }
                 break;
         }
