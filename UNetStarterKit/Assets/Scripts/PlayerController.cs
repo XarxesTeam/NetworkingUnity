@@ -31,7 +31,6 @@ public class PlayerController : NetworkBehaviour
     }
 
     // OnGUI /////////////////////////////////////////
-
     private void OnGUI()
     {
         if (isLocalPlayer)
@@ -41,12 +40,6 @@ public class PlayerController : NetworkBehaviour
             if (GUILayout.Button("Change name"))
             {
                 CmdChangeName(playerName);
-            }
-            GUILayout.Space(10);
-            playerPrefabIndex = GUILayout.SelectionGrid(playerPrefabIndex - 1, playerNames, 3) + 1;
-            if (GUILayout.Button("Change character"))
-            {
-                CmdChangePlayerPrefab(playerPrefabIndex);
             }
             GUILayout.EndArea();
         }

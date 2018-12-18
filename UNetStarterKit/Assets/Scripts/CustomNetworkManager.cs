@@ -15,19 +15,15 @@ public class MsgTypes
 
 public class CustomNetworkManager : NetworkManager
 {
-    public int selectedGridIndex = 0;
-    public string[] playerNames = new string[] { "Boy", "Girl", "Robot" };
-
-    private void OnGUI()
-    {
-        if (!isNetworkActive)
-        {
-            selectedGridIndex = GUI.SelectionGrid(new Rect(Screen.width - 200, 10, 200, 50), selectedGridIndex, playerNames, 3);
-            playerPrefabIndex = (short)(selectedGridIndex + 1);
-        }
-    }
+    //public int selectedGridIndex = 0;
+    //public string[] playerNames = new string[] { "Boy", "Girl", "Robot" };
 
     public short playerPrefabIndex;
+
+    private void Start()
+    {
+        playerPrefabIndex = (short)(StaticClass.prefab_index + 1);
+    }
 
     public override void OnStartServer()
     {

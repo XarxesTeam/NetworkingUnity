@@ -49,7 +49,8 @@ public class MainMenuLogic : MonoBehaviour {
             {
                 if(index_prefab != -1)
                 {
-
+                    GetComponent<SceneTransferMain>()._prefab_index = index_prefab;
+                    GetComponent<SceneTransferMain>().StartGame();
                 }
             }
 
