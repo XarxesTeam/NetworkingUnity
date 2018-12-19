@@ -10,7 +10,13 @@ public class SceneTransferMain : MonoBehaviour
     public void StartGame()
     {
         StaticClass.prefab_index = _prefab_index;
-        SceneManager.LoadScene("SampleScene");
+        SceneManager.LoadScene("Game");
+    }
+
+    public void ReturnToMenu()
+    {
+        StaticClass.prefab_index = _prefab_index;
+        SceneManager.LoadScene("MainMenu");
     }
 }
 

@@ -18,6 +18,10 @@ public class PlayerController : NetworkBehaviour
     private float originalCubeScaleX = 1.0f;
 
     private bool isDead = false;
+    private bool win = false;
+    public GameObject winLoseCanvas;
+    public GameObject winText;
+    public GameObject loseText;
 
     [SyncVar(hook = "SyncNameChanged")]
     public string playerName = "Player";
@@ -107,6 +111,7 @@ public class PlayerController : NetworkBehaviour
         originalCubeScaleX = hpCube.transform.localScale.x;
 
         isDead = false;
+        win = false;
 
         if (isLocalPlayer)
         {
@@ -114,6 +119,8 @@ public class PlayerController : NetworkBehaviour
         }
 
         animator = GetComponent<Animator>();
+
+        winLoseCanvas.gameObject.SetActive(false);
     }
 
     // Update is called once per frame
@@ -178,6 +185,21 @@ public class PlayerController : NetworkBehaviour
         }
 
         hpCube.transform.eulerAngles = new Vector3(0.0f, 0.0f, 0.0f);
+
+        if(win)
+        {
+            winLoseCanvas.gameObject.SetActive(true);
+            winText.SetActive(true);
+            loseText.SetActive(false);
+            win = false;
+        }
+        if(isDead)
+        {
+            winLoseCanvas.gameObject.SetActive(true);
+            winText.SetActive(false);
+            loseText.SetActive(true);
+            isDead = false;
+        }
     }
 
     private void OnDestroy()
@@ -218,11 +240,14 @@ public class PlayerController : NetworkBehaviour
     {
         PlayerController enemyController = enemyGO.GetComponent<PlayerController>();
         enemyController.hp -= dmg;
-        if (enemyController.hp < 0)
+        if (enemyController.hp <= 0)
+        {
             enemyController.hp = 0;
-
-        enemyController.isDead = true;
-
-        enemyController.hpCube.transform.localScale -= new Vector3((float)(enemyController.originalCubeScaleX * ((float)dmg / (float)enemyController.maxHp)), 0.0f, 0.0f);
+            enemyController.isDead = true;
+            win = true;
+            enemyController.hpCube.SetActive(false);
+        }
+        else
+            enemyController.hpCube.transform.localScale -= new Vector3((float)(enemyController.originalCubeScaleX * ((float)dmg / (float)enemyController.maxHp)), 0.0f, 0.0f);
     }
 }
