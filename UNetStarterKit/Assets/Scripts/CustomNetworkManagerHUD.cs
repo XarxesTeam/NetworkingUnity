@@ -77,6 +77,14 @@ namespace UnityEngine.Networking
             if (!NetworkClient.active && !NetworkServer.active && manager.matchMaker == null)
 
             {
+                string port = manager.networkPort.ToString();
+                GUI.TextArea(new Rect(Screen.width * 0.5f - 95, Screen.height * 0.4f, 95, 20), "Port: ");
+                port = GUI.TextField(new Rect(Screen.width * 0.5f, Screen.height * 0.4f, 95, 20), port);
+                if (string.IsNullOrEmpty(port))
+                    port = "0";
+                manager.networkPort = int.Parse(port);
+
+                ypos += spacing;
 
                 if (GUI.Button(new Rect(Screen.width * 0.5f - 200 * 0.5f, Screen.height * 0.45f, 200, 20), "Connect as LAN Host"))
                 {
@@ -114,23 +122,20 @@ namespace UnityEngine.Networking
             else
 
             {
-
                 if (NetworkServer.active)
-
                 {
-
-                    GUI.Label(new Rect(xpos, ypos, 300, 20), "Server: port=" + manager.networkPort);
-
+                    GUIStyle style = new GUIStyle();
+                    style.normal.textColor = Color.black;
+                    GUI.Label(new Rect(xpos, ypos, 300, 20), "Server: port=" + manager.networkPort, style);
                     ypos += spacing;
 
                 }
 
                 if (NetworkClient.active)
-
                 {
-
-                    GUI.Label(new Rect(xpos, ypos, 300, 20), "Client: address=" + manager.networkAddress + " port=" + manager.networkPort);
-
+                    GUIStyle style = new GUIStyle();
+                    style.normal.textColor = Color.black;
+                    GUI.Label(new Rect(xpos, ypos, 300, 20), "Client: address=" + manager.networkAddress + " port=" + manager.networkPort, style);
                     ypos += spacing;
 
                 }
