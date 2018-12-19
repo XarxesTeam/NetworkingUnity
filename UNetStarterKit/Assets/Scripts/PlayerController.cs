@@ -14,6 +14,11 @@ public class PlayerController : NetworkBehaviour
     public Transform nameLabelPrefab;
     private TextMesh nameLabel;
 
+    public GameObject hpCube;
+    private float originalCubeScaleX = 1.0f;
+
+    private bool isDead = false;
+
     [SyncVar(hook = "SyncNameChanged")]
     public string playerName = "Player";
     public int playerPrefabIndex;
@@ -98,6 +103,11 @@ public class PlayerController : NetworkBehaviour
         nameLabel = Instantiate(nameLabelPrefab).GetComponent<TextMesh>();
         nameLabel.text = playerName;
 
+        hp = maxHp;
+        originalCubeScaleX = hpCube.transform.localScale.x;
+
+        isDead = false;
+
         if (isLocalPlayer)
         {
             CameraController.player = this.transform;
@@ -166,6 +176,8 @@ public class PlayerController : NetworkBehaviour
             enemyHit = false;
             ChangeEnemyHp(damage, enemyHitGO);
         }
+
+        hpCube.transform.eulerAngles = new Vector3(0.0f, 0.0f, 0.0f);
     }
 
     private void OnDestroy()
@@ -182,7 +194,8 @@ public class PlayerController : NetworkBehaviour
         TakeDamage(dmg, enemyGO);
     }
 
-    public int hp = 100;
+    public int maxHp = 100;
+    private int hp = 100;
     public GameObject enemyHitGO;
 
     [Client]
@@ -203,6 +216,13 @@ public class PlayerController : NetworkBehaviour
     [ClientRpc]
     public void RpcTakeDamage(int dmg, GameObject enemyGO)
     {
-        enemyGO.GetComponent<PlayerController>().hp -= dmg;
+        PlayerController enemyController = enemyGO.GetComponent<PlayerController>();
+        enemyController.hp -= dmg;
+        if (enemyController.hp < 0)
+            enemyController.hp = 0;
+
+        enemyController.isDead = true;
+
+        enemyController.hpCube.transform.localScale -= new Vector3((float)(enemyController.originalCubeScaleX * ((float)dmg / (float)enemyController.maxHp)), 0.0f, 0.0f);
     }
 }
