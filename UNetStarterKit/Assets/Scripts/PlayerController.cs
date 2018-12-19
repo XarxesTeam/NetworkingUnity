@@ -90,7 +90,6 @@ public class PlayerController : NetworkBehaviour
 
     public int damage = 9;
     public bool kicking = false;
-    public bool enemyHit = false;
 
     // Use this for initialization
     void Start ()
@@ -157,14 +156,8 @@ public class PlayerController : NetworkBehaviour
 
         if (Input.GetButtonDown("Fire1"))
         {
-            setAnimation("Kicking");            
+            setAnimation("Kicking");
             kicking = true;
-        }
-
-        if(enemyHit)
-        {
-            enemyHit = false;
-            ChangeEnemyHp(damage, enemyHitGO);
         }
   	}
 
@@ -177,32 +170,40 @@ public class PlayerController : NetworkBehaviour
     }
 
 
-    public void ChangeEnemyHp(int dmg, GameObject enemyGO)
+    public void ChangeEnemyHp(int dmg)
     {
-        TakeDamage(dmg, enemyGO);
+       TakeDamage(dmg);
     }
 
+    [SyncVar(hook = "SyncHpChanged")]
     public int hp = 100;
-    public GameObject enemyHitGO;
+
+    void SyncHpChanged(int dmg)
+    {
+        hp -= dmg;
+    }
 
     [Client]
-    public void TakeDamage(int dmg, GameObject enemyGO)
-    {        
-        if (!isLocalPlayer)
-            return;
-
-        CmdTakeDamage(dmg, enemyGO);
+    public void TakeDamage(int dmg)
+    {    
+        CmdTakeDamage(dmg);
     }
 
     [Command]
-    void CmdTakeDamage(int dmg, GameObject enemyGO)
+    void CmdTakeDamage(int dmg)
     {
-        RpcTakeDamage(dmg, enemyGO);
+        RpcTakeDamage(dmg);
     }
 
     [ClientRpc]
-    public void RpcTakeDamage(int dmg, GameObject enemyGO)
+    public void RpcTakeDamage(int dmg)
     {
-        enemyGO.GetComponent<PlayerController>().hp -= dmg;
+        hp -= dmg;
+
+        if (hp <= 0)
+        {
+            //This dont works correctly
+            GameObject.FindGameObjectWithTag("GameLogic").GetComponent<GameLogic>().game_state = GAME_STATE.PLAY_END;
+        }
     }
 }
