@@ -52,7 +52,7 @@ public class PlayerController : NetworkBehaviour
         CustomNetworkManager custom = mng.GetComponent<CustomNetworkManager>();
         custom.ChangePlayerPrefab(this, prefabIndex);
     }
-    
+
     // Animation syncing /////////////////////////////
 
     [SyncVar(hook = "OnSetAnimation")]
@@ -90,23 +90,24 @@ public class PlayerController : NetworkBehaviour
 
     public int damage = 9;
     public bool kicking = false;
+    public bool enemyHit = false;
 
     // Use this for initialization
-    void Start ()
+    void Start()
     {
         nameLabel = Instantiate(nameLabelPrefab).GetComponent<TextMesh>();
         nameLabel.text = playerName;
 
-        if(isLocalPlayer)
+        if (isLocalPlayer)
         {
             CameraController.player = this.transform;
         }
-        
+
         animator = GetComponent<Animator>();
-	}
-	
-	// Update is called once per frame
-	void Update ()
+    }
+
+    // Update is called once per frame
+    void Update()
     {
         nameLabel.transform.position = nameLabelPosition.position;
         nameLabel.text = playerName;
@@ -114,14 +115,14 @@ public class PlayerController : NetworkBehaviour
         nameLabel.text += hp.ToString();
 
         if (!isLocalPlayer) return;
-        
+
         Vector3 translation = new Vector3();
         float angle = 0.0f;
 
         float horizontalAxis = Input.GetAxis("Horizontal");
         float verticalAxis = Input.GetAxis("Vertical");
 
-        if (verticalAxis  > 0.0)
+        if (verticalAxis > 0.0)
         {
             setAnimation("Running");
             translation += new Vector3(0.0f, 0.0f, verticalAxis * RUNNING_SPEED * Time.deltaTime);
@@ -159,51 +160,49 @@ public class PlayerController : NetworkBehaviour
             setAnimation("Kicking");
             kicking = true;
         }
-  	}
+
+        if (enemyHit)
+        {
+            enemyHit = false;
+            ChangeEnemyHp(damage, enemyHitGO);
+        }
+    }
 
     private void OnDestroy()
     {
-        if(nameLabel != null)
+        if (nameLabel != null)
         {
             Destroy(nameLabel.gameObject);
         }
     }
 
 
-    public void ChangeEnemyHp(int dmg)
+    public void ChangeEnemyHp(int dmg, GameObject enemyGO)
     {
-       TakeDamage(dmg);
+        TakeDamage(dmg, enemyGO);
     }
 
-    [SyncVar(hook = "SyncHpChanged")]
     public int hp = 100;
-
-    void SyncHpChanged(int dmg)
-    {
-        hp -= dmg;
-    }
+    public GameObject enemyHitGO;
 
     [Client]
-    public void TakeDamage(int dmg)
-    {    
-        CmdTakeDamage(dmg);
+    public void TakeDamage(int dmg, GameObject enemyGO)
+    {
+        if (!isLocalPlayer)
+            return;
+
+        CmdTakeDamage(dmg, enemyGO);
     }
 
     [Command]
-    void CmdTakeDamage(int dmg)
+    void CmdTakeDamage(int dmg, GameObject enemyGO)
     {
-        RpcTakeDamage(dmg);
+        RpcTakeDamage(dmg, enemyGO);
     }
 
     [ClientRpc]
-    public void RpcTakeDamage(int dmg)
+    public void RpcTakeDamage(int dmg, GameObject enemyGO)
     {
-        hp -= dmg;
-
-        if (hp <= 0)
-        {
-            //This dont works correctly
-            GameObject.FindGameObjectWithTag("GameLogic").GetComponent<GameLogic>().game_state = GAME_STATE.PLAY_END;
-        }
+        enemyGO.GetComponent<PlayerController>().hp -= dmg;
     }
 }

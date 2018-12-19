@@ -2133,9 +2133,11 @@ MonoBehaviour:
   - Boy
   - Girl
   - Robot
-  hp: 100
   damage: 9
   kicking: 0
+  enemyHit: 0
+  hp: 100
+  enemyHitGO: {fileID: 1235823938203468}
 --- !u!114 &114880493618979718
 MonoBehaviour:
   m_ObjectHideFlags: 1
