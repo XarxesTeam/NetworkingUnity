@@ -100,6 +100,7 @@ public class PlayerController : NetworkBehaviour
 
     public int damage = 9;
     public bool kicking = false;
+    private bool kicked = false;
     public bool enemyHit = false;
 
     // Use this for initialization
@@ -110,6 +111,7 @@ public class PlayerController : NetworkBehaviour
 
         hp = maxHp;
         originalCubeScaleX = hpCube.transform.localScale.x;
+        kicked = false;
 
         isDead = false;
         win = false;
@@ -179,7 +181,23 @@ public class PlayerController : NetworkBehaviour
             if (Input.GetButtonDown("Fire1"))
             {
                 setAnimation("Kicking");
-                kicking = true;
+            }
+
+            if (animator.GetCurrentAnimatorStateInfo(0).IsName("Kicking") && !kicked)
+            {
+                AnimatorStateInfo animationState = animator.GetCurrentAnimatorStateInfo(0);
+                AnimatorClipInfo[] myAnimatorClip = animator.GetCurrentAnimatorClipInfo(0);
+                float myTime = myAnimatorClip[0].clip.length * animationState.normalizedTime;
+                if (myTime >= (myAnimatorClip[0].clip.length / 4))
+                {
+                    kicking = true;
+                    kicked = true;
+                }
+            }
+            else if (!animator.GetCurrentAnimatorStateInfo(0).IsName("Kicking"))
+            {
+                kicking = false;
+                kicked = false;
             }
 
             if (enemyHit)
