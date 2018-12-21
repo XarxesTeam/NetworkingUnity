@@ -19,6 +19,7 @@ public class PlayerController : NetworkBehaviour
 
     private bool isDead = false;
     private bool win = false;
+    public bool stopCamera = false;
     public GameObject winLoseCanvas;
     public GameObject winText;
     public GameObject loseText;
@@ -112,6 +113,7 @@ public class PlayerController : NetworkBehaviour
 
         isDead = false;
         win = false;
+        stopCamera = false;
 
         if (isLocalPlayer)
         {
@@ -133,58 +135,61 @@ public class PlayerController : NetworkBehaviour
 
         if (!isLocalPlayer) return;
 
-        Vector3 translation = new Vector3();
-        float angle = 0.0f;
+        if (!isDead && !win)
+        {
+            Vector3 translation = new Vector3();
+            float angle = 0.0f;
 
-        float horizontalAxis = Input.GetAxis("Horizontal");
-        float verticalAxis = Input.GetAxis("Vertical");
+            float horizontalAxis = Input.GetAxis("Horizontal");
+            float verticalAxis = Input.GetAxis("Vertical");
 
-        if (verticalAxis > 0.0)
-        {
-            setAnimation("Running");
-            translation += new Vector3(0.0f, 0.0f, verticalAxis * RUNNING_SPEED * Time.deltaTime);
-            transform.Translate(translation);
-        }
-        else if (verticalAxis < 0.0)
-        {
-            setAnimation("Running backwards");
-            translation += new Vector3(0.0f, 0.0f, verticalAxis * RUNNING_SPEED * Time.deltaTime * 0.5f);
-            transform.Translate(translation);
-        }
-        else
-        {
-            setAnimation("Idling");
-        }
+            if (verticalAxis > 0.0)
+            {
+                setAnimation("Running");
+                translation += new Vector3(0.0f, 0.0f, verticalAxis * RUNNING_SPEED * Time.deltaTime);
+                transform.Translate(translation);
+            }
+            else if (verticalAxis < 0.0)
+            {
+                setAnimation("Running backwards");
+                translation += new Vector3(0.0f, 0.0f, verticalAxis * RUNNING_SPEED * Time.deltaTime * 0.5f);
+                transform.Translate(translation);
+            }
+            else
+            {
+                setAnimation("Idling");
+            }
 
-        if (horizontalAxis > 0.0f)
-        {
-            angle = horizontalAxis * Time.deltaTime * ROTATION_SPEED;
-            transform.Rotate(new Vector3(0.0f, 1.0f, 0.0f), angle);
-        }
-        else if (horizontalAxis < 0.0f)
-        {
-            angle = horizontalAxis * Time.deltaTime * ROTATION_SPEED;
-            transform.Rotate(new Vector3(0.0f, 1.0f, 0.0f), angle);
-        }
+            if (horizontalAxis > 0.0f)
+            {
+                angle = horizontalAxis * Time.deltaTime * ROTATION_SPEED;
+                transform.Rotate(new Vector3(0.0f, 1.0f, 0.0f), angle);
+            }
+            else if (horizontalAxis < 0.0f)
+            {
+                angle = horizontalAxis * Time.deltaTime * ROTATION_SPEED;
+                transform.Rotate(new Vector3(0.0f, 1.0f, 0.0f), angle);
+            }
 
-        if (Input.GetButton("Jump"))
-        {
-            setAnimation("Jumping");
-        }
+            if (Input.GetButton("Jump"))
+            {
+                setAnimation("Jumping");
+            }
 
-        if (Input.GetButtonDown("Fire1"))
-        {
-            setAnimation("Kicking");
-            kicking = true;
-        }
+            if (Input.GetButtonDown("Fire1"))
+            {
+                setAnimation("Kicking");
+                kicking = true;
+            }
 
-        if (enemyHit)
-        {
-            enemyHit = false;
-            ChangeEnemyHp(damage, enemyHitGO);
-        }
+            if (enemyHit)
+            {
+                enemyHit = false;
+                ChangeEnemyHp(damage, enemyHitGO);
+            }
 
-        hpCube.transform.eulerAngles = new Vector3(0.0f, 0.0f, 0.0f);
+            hpCube.transform.eulerAngles = new Vector3(0.0f, 0.0f, 0.0f);
+        }
 
         if(win)
         {
@@ -192,6 +197,8 @@ public class PlayerController : NetworkBehaviour
             winText.SetActive(true);
             loseText.SetActive(false);
             win = false;
+            stopCamera = true;
+            transform.position = new Vector3(transform.position.x, transform.position.y - 3.0f, transform.position.z);
         }
         if(isDead)
         {
@@ -199,6 +206,8 @@ public class PlayerController : NetworkBehaviour
             winText.SetActive(false);
             loseText.SetActive(true);
             isDead = false;
+            stopCamera = true;
+            transform.position = new Vector3(transform.position.x, transform.position.y - 3.0f, transform.position.z);
         }
     }
 
@@ -210,6 +219,15 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
+    public bool IsDead()
+    {
+        return isDead;
+    }
+
+    public bool HasWon()
+    {
+        return win;
+    }
 
     public void ChangeEnemyHp(int dmg, GameObject enemyGO)
     {
